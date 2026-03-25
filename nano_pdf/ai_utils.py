@@ -10,12 +10,13 @@ MODEL = os.getenv("NANO_PDF_MODEL", "google/gemini-3-pro-image-preview")
 
 
 def _get_proxy_url():
-    """Get OpenRouter proxy URL from environment (set by OpenClaw sandbox)."""
-    url = os.getenv("OPENROUTER_PROXY_URL")
+    """Get OpenRouter proxy URL — prefers PDF-specific, falls back to general."""
+    url = os.getenv("OPENROUTER_PDF_PROXY_URL")
+    if not url or "/none" in url:
+        url = os.getenv("OPENROUTER_PROXY_URL")
     if not url or "/none" in url:
         raise ValueError(
-            "OPENROUTER_PROXY_URL not configured. "
-            "nano-pdf requires per-client OpenRouter proxy for image editing."
+            "OPENROUTER_PDF_PROXY_URL or OPENROUTER_PROXY_URL not configured."
         )
     return url
 

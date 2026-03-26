@@ -131,7 +131,10 @@ def generate_edited_slide(
             ) from e
         raise RuntimeError(f"API Error: {e.response.status_code} {e.response.text}") from e
 
-    return _extract_image_from_response(data)
+    image = _extract_image_from_response(data)
+    msg = data.get("choices", [{}])[0].get("message", {})
+    text = msg.get("content", "") if isinstance(msg.get("content"), str) else ""
+    return image, text
 
 
 def generate_new_slide(
@@ -169,4 +172,7 @@ def generate_new_slide(
     except httpx.HTTPStatusError as e:
         raise RuntimeError(f"API Error: {e.response.status_code} {e.response.text}") from e
 
-    return _extract_image_from_response(data)
+    image = _extract_image_from_response(data)
+    msg = data.get("choices", [{}])[0].get("message", {})
+    text = msg.get("content", "") if isinstance(msg.get("content"), str) else ""
+    return image, text
